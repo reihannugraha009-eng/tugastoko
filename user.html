@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Pembeli - GadgetStore</title>
+    <style>
+        /* Desain kotak (box-shadow dan border-radius) sesuai instruksi soal */
+        .kartu-pembatas {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        /* Katalog dalam bentuk grid responsif */
+        .katalog-grid {
+            display: grid;
+            grid-template-columns: auto auto auto;
+            gap: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GadgetStore Management System</h1>
+    </header>
 
+    <a href="index.html">⬅ Kembali ke Menu Utama</a>
+
+    <div class="kartu-pembatas">
+        <h2>Area Belanja Pembeli (Katalog & Transaksi)</h2>
+        
+        <div class="katalog-grid">
+            
+            <!-- Contoh Produk 1 -->
+            <div>
+                <img src="https://via.placeholder.com/250x150" alt="Smartphone Premium">
+                <h3>Smartphone Premium</h3>
+                <p><strong>Rp 12.000.000</strong></p>
+                <p>Spesifikasi: Layar 120Hz, RAM 12GB, Storage 256GB, Baterai 5000mAh.</p>
+                
+                <video controls width="250">
+                    <!-- Ini pakai link video dummy dari internet -->
+                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                </video>
+                <br><br>
+                
+                <a href="#">Beli Sekarang</a>
+            </div>
+
+            <!-- Nanti kalau mau tambah produk lagi, tinggal copy dari <div> produk 1 sampai ke </div> -->
+
+        </div>
+    </div>
+
+    <!-- Backsound jalan terus secara sembunyi -->
+    <audio src="sound.mp3" autoplay loop hidden></audio>
+
+</body>
+</html>
