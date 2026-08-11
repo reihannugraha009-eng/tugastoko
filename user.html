@@ -2,59 +2,155 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Panel Pembeli - GadgetStore</title>
+    <title>Katalog Pembeli - GadgetStore</title>
     <style>
-        /* Desain kotak (box-shadow dan border-radius) sesuai instruksi soal */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-btn:hover { text-decoration: underline; }
+        
         .kartu-pembatas {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
+            background: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 30px;
+        }
+        .kartu-pembatas h2 {
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
         }
         
-        /* Katalog dalam bentuk grid responsif */
+        /* Katalog Grid Responsif */
         .katalog-grid {
             display: grid;
-            grid-template-columns: auto auto auto;
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
         }
+        
+        /* Desain Kartu Produk */
+        .kartu-produk {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fff;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .kartu-produk:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transform: translateY(-8px);
+            border-color: #cbd5e1;
+        }
+        .kartu-produk img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .kartu-produk h3 { margin: 0 0 10px 0; color: #1e293b; }
+        .harga {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ef4444; /* Warna Merah Harga */
+            margin: 5px 0 15px 0;
+        }
+        .deskripsi { color: #64748b; font-size: 14px; margin-bottom: 20px; flex-grow: 1; }
+        
+        /* Video Demo */
+        .kartu-produk video {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        
+        /* Tombol Beli */
+        .btn-beli {
+            display: block;
+            background-color: #2563eb;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-beli:hover { background-color: #1d4ed8; }
     </style>
 </head>
 <body>
     <header>
-        <h1>GadgetStore Management System</h1>
+        <h1>GadgetStore System</h1>
     </header>
 
-    <a href="index.html">⬅ Kembali ke Menu Utama</a>
+    <div class="container">
+        <a href="index.html" class="back-btn">⬅ Kembali ke Menu Utama</a>
 
-    <div class="kartu-pembatas">
-        <h2>Area Belanja Pembeli (Katalog & Transaksi)</h2>
-        
-        <div class="katalog-grid">
+        <div class="kartu-pembatas">
+            <h2>Katalog Produk</h2>
             
-            <!-- Contoh Produk 1 -->
-            <div>
-                <img src="https://via.placeholder.com/250x150" alt="Smartphone Premium">
-                <h3>Smartphone Premium</h3>
-                <p><strong>Rp 12.000.000</strong></p>
-                <p>Spesifikasi: Layar 120Hz, RAM 12GB, Storage 256GB, Baterai 5000mAh.</p>
+            <div class="katalog-grid">
                 
-                <video controls width="250">
-                    <!-- Ini pakai link video dummy dari internet -->
-                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                </video>
-                <br><br>
-                
-                <a href="#">Beli Sekarang</a>
+                <!-- Kartu Produk 1 -->
+                <div class="kartu-produk">
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=600&auto=format&fit=crop" alt="Smartphone Premium">
+                    <h3>Smartphone Premium</h3>
+                    <div class="harga">Rp 12.000.000</div>
+                    <div class="deskripsi">Spesifikasi utama: Layar AMOLED 120Hz, RAM 12GB, Storage 256GB, dan Baterai 5000mAh. Sangat cocok untuk gaming dan fotografi.</div>
+                    
+                    <video controls>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    </video>
+                    
+                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                </div>
+
+                <!-- Kartu Produk 2 (Tinggal copy dari sini kalau mau nambah produk lain) -->
+                <div class="kartu-produk">
+                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=600&auto=format&fit=crop" alt="Laptop Ultra">
+                    <h3>Laptop UltraBook Pro</h3>
+                    <div class="harga">Rp 18.500.000</div>
+                    <div class="deskripsi">Spesifikasi utama: Prosesor Core i7 Gen 13, Layar 4K, RAM 16GB, SSD 1TB. Performa ngebut untuk editing dan coding.</div>
+                    
+                    <video controls>
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    </video>
+                    
+                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                </div>
+
             </div>
-
-            <!-- Nanti kalau mau tambah produk lagi, tinggal copy dari <div> produk 1 sampai ke </div> -->
-
         </div>
     </div>
 
-    <!-- Backsound jalan terus secara sembunyi -->
+    <!-- Backsound sembunyi -->
     <audio src="sound.mp3" autoplay loop hidden></audio>
 
 </body>
