@@ -169,6 +169,47 @@
                     <iframe src="https://www.youtube.com/embed/oM9v6P41tRA" allowfullscreen></iframe>
                     <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
                 </div>
+                <!-- Tombol Keranjang Melayang -->
+<button class="floating-cart" onclick="bukaModal()">🛒 Keranjang (<span id="jumlah-item">0</span>)</button>
+
+<!-- Pop-up Keranjang & Form Checkout -->
+<div id="modalKeranjang" class="modal-overlay">
+    <div class="modal-box">
+        <span class="close-btn" onclick="tutupModal()">✖ Tutup</span>
+        <h3>Keranjang Belanja</h3>
+        
+        <ul id="listKeranjang" style="list-style: none; padding: 0;"></ul>
+        <div style="font-size: 18px; font-weight: bold; text-align: right; margin-bottom: 20px; color: #ef4444;">
+            Total: Rp <span id="total-bayar">0</span>
+        </div>
+
+        <h3>Data Checkout</h3>
+        <form id="formCheckout" onsubmit="prosesCheckout(event)">
+            <div class="form-grup">
+                <label>Nama Lengkap:</label>
+                <input type="text" id="namaPembeli" required>
+            </div>
+            <div class="form-grup">
+                <label>No. WhatsApp:</label>
+                <input type="number" id="waPembeli" required>
+            </div>
+            <div class="form-grup">
+                <label>Alamat:</label>
+                <textarea id="alamatPembeli" required rows="3"></textarea>
+            </div>
+            <div class="form-grup">
+                <label>Metode Pembayaran:</label>
+                <select id="metodePembayaran" required>
+                    <option value="" disabled selected>-- Pilih Metode --</option>
+                    <option value="COD">COD</option>
+                    <option value="Transfer">Transfer Bank</option>
+                    <option value="QRIS">QRIS</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-checkout">Proses Pesanan</button>
+        </form>
+    </div>
+</div>
 
             </div>
         </div>
