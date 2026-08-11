@@ -68,26 +68,27 @@
         }
         .kartu-produk img {
             width: 100%;
-            height: 200px;
+            height: 250px;
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 15px;
         }
-        .kartu-produk h3 { margin: 0 0 10px 0; color: #1e293b; }
+        .kartu-produk h3 { margin: 0 0 10px 0; color: #1e293b; font-size: 20px;}
         .harga {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
-            color: #ef4444; /* Warna Merah Harga */
+            color: #ef4444; 
             margin: 5px 0 15px 0;
         }
-        .deskripsi { color: #64748b; font-size: 14px; margin-bottom: 20px; flex-grow: 1; }
+        .deskripsi { color: #64748b; font-size: 14px; margin-bottom: 20px; flex-grow: 1; line-height: 1.5; }
         
-        /* Video Demo */
-        .kartu-produk video {
+        /* Video YouTube iframe */
+        .kartu-produk iframe {
             width: 100%;
+            height: 200px;
             border-radius: 8px;
             margin-bottom: 20px;
-            outline: none;
+            border: none;
         }
         
         /* Tombol Beli */
@@ -118,31 +119,54 @@
             
             <div class="katalog-grid">
                 
-                <!-- Kartu Produk 1 -->
+                <!-- Produk 1: Xiaomi 17T -->
                 <div class="kartu-produk">
-                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=600&auto=format&fit=crop" alt="Smartphone Premium">
-                    <h3>Smartphone Premium</h3>
-                    <div class="harga">Rp 12.000.000</div>
-                    <div class="deskripsi">Spesifikasi utama: Layar AMOLED 120Hz, RAM 12GB, Storage 256GB, dan Baterai 5000mAh. Sangat cocok untuk gaming dan fotografi.</div>
-                    
-                    <video controls>
-                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                    </video>
-                    
+                    <img src="https://images.unsplash.com/photo-1598327105666-5b89351cb31b?q=80&w=600&auto=format&fit=crop" alt="Xiaomi 17T">
+                    <h3>Xiaomi 17T</h3>
+                    <div class="harga">Rp 8.500.000</div>
+                    <div class="deskripsi">Performa gahar dengan kamera Leica. Cocok untuk fotografi profesional dan gaming berat dengan harga terjangkau.</div>
+                    <!-- Menggunakan iframe agar YouTube bisa diputar -->
+                    <iframe src="https://www.youtube.com/embed/IPl-yBvP79U" allowfullscreen></iframe>
                     <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
                 </div>
 
-                <!-- Kartu Produk 2 (Tinggal copy dari sini kalau mau nambah produk lain) -->
+                <!-- Produk 2: Samsung Galaxy S26 Ultra -->
                 <div class="kartu-produk">
-                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=600&auto=format&fit=crop" alt="Laptop Ultra">
-                    <h3>Laptop UltraBook Pro</h3>
-                    <div class="harga">Rp 18.500.000</div>
-                    <div class="deskripsi">Spesifikasi utama: Prosesor Core i7 Gen 13, Layar 4K, RAM 16GB, SSD 1TB. Performa ngebut untuk editing dan coding.</div>
-                    
-                    <video controls>
-                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                    </video>
-                    
+                    <img src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?q=80&w=600&auto=format&fit=crop" alt="Samsung Galaxy S26 Ultra">
+                    <h3>Samsung Galaxy S26 Ultra</h3>
+                    <div class="harga">Rp 22.000.000</div>
+                    <div class="deskripsi">HP Flagship terbaik dengan S-Pen dan teknologi AI canggih. Layar Dynamic AMOLED dan kamera superior.</div>
+                    <iframe src="https://www.youtube.com/embed/q7Ura_0SwA0" allowfullscreen></iframe>
+                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                </div>
+
+                <!-- Produk 3: iPhone 17 -->
+                <div class="kartu-produk">
+                    <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?q=80&w=600&auto=format&fit=crop" alt="iPhone 17">
+                    <h3>Apple iPhone 17</h3>
+                    <div class="harga">Rp 16.500.000</div>
+                    <div class="deskripsi">Generasi terbaru iPhone dengan performa chipset ngebut, desain elegan, dan integrasi ekosistem Apple yang mulus.</div>
+                    <iframe src="https://www.youtube.com/embed/rkLpVyRGCPw" allowfullscreen></iframe>
+                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                </div>
+
+                <!-- Produk 4: Vivo X300 Pro -->
+                <div class="kartu-produk">
+                    <img src="https://images.unsplash.com/photo-1585060544812-6b45742d762f?q=80&w=600&auto=format&fit=crop" alt="Vivo X300 Pro">
+                    <h3>Vivo X300 Pro</h3>
+                    <div class="harga">Rp 14.000.000</div>
+                    <div class="deskripsi">Perdana dengan Dimensity 9500. Sangat cocok untuk kamu yang mencari hasil jepretan kamera setara DSLR.</div>
+                    <iframe src="https://www.youtube.com/embed/-I2STJrgxcA" allowfullscreen></iframe>
+                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                </div>
+
+                <!-- Produk 5: POCO X8 Pro -->
+                <div class="kartu-produk">
+                    <img src="https://images.unsplash.com/photo-1601784551446-20c9e07cd28d?q=80&w=600&auto=format&fit=crop" alt="POCO X8 Pro">
+                    <h3>POCO X8 Pro</h3>
+                    <div class="harga">Rp 6.000.000</div>
+                    <div class="deskripsi">Raja performa kelas menengah. Dilengkapi baterai 8500mAh dan HyperCharge 100W, bikin mabar makin lancar.</div>
+                    <iframe src="https://www.youtube.com/embed/oM9v6P41tRA" allowfullscreen></iframe>
                     <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
                 </div>
 
