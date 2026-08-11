@@ -1,1 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin - GadgetStore</title>
+    <style>
+        /* Desain kotak (box-shadow dan border-radius) sesuai instruksi soal */
+        .kartu-pembatas {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GadgetStore Management System</h1>
+    </header>
 
+    <a href="index.html">⬅ Kembali ke Menu Utama</a>
+
+    <div class="kartu-pembatas">
+        <h2>Area Kerja Admin (Manajemen Produk & Media)</h2>
+        
+        <form>
+            <label>Nama Produk:</label><br>
+            <input type="text" placeholder="Masukkan nama produk"><br><br>
+
+            <label>Deskripsi & Harga Produk:</label><br>
+            <textarea rows="4" cols="40" placeholder="Masukkan deskripsi..."></textarea><br><br>
+
+            <label>URL Gambar Produk:</label><br>
+            <input type="text" placeholder="Masukkan link gambar"><br><br>
+
+            <button type="button">Simpan Produk ke Database</button>
+        </form>
+    </div>
+
+    <!-- Backsound jalan terus secara sembunyi -->
+    <audio src="sound.mp3" autoplay loop hidden></audio>
+
+</body>
+</html>
