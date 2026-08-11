@@ -4,40 +4,106 @@
     <meta charset="UTF-8">
     <title>Panel Admin - GadgetStore</title>
     <style>
-        /* Desain kotak (box-shadow dan border-radius) sesuai instruksi soal */
-        .kartu-pembatas {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
+        header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-btn:hover { text-decoration: underline; }
+        
+        /* Desain kotak sesuai tugas */
+        .kartu-pembatas {
+            background: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 30px 40px;
+        }
+        .kartu-pembatas h2 {
+            margin-top: 0;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        label {
+            font-weight: bold;
+            color: #475569;
+            display: block;
+            margin-top: 15px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        button {
+            margin-top: 30px;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        button:hover { background-color: #059669; }
     </style>
 </head>
 <body>
     <header>
-        <h1>GadgetStore Management System</h1>
+        <h1>GadgetStore System</h1>
     </header>
 
-    <a href="index.html">⬅ Kembali ke Menu Utama</a>
+    <div class="container">
+        <a href="index.html" class="back-btn">⬅ Kembali ke Menu Utama</a>
 
-    <div class="kartu-pembatas">
-        <h2>Area Kerja Admin (Manajemen Produk & Media)</h2>
-        
-        <form>
-            <label>Nama Produk:</label><br>
-            <input type="text" placeholder="Masukkan nama produk"><br><br>
+        <div class="kartu-pembatas">
+            <h2>Area Kerja Admin</h2>
+            <p style="color: #64748b;">Gunakan formulir ini untuk menambahkan inventaris produk baru.</p>
+            
+            <form>
+                <label>Nama Produk:</label>
+                <input type="text" placeholder="Contoh: Laptop UltraBook Pro">
 
-            <label>Deskripsi & Harga Produk:</label><br>
-            <textarea rows="4" cols="40" placeholder="Masukkan deskripsi..."></textarea><br><br>
+                <label>Deskripsi & Harga Produk:</label>
+                <textarea rows="4" placeholder="Masukkan deskripsi spesifikasi dan harga..."></textarea>
 
-            <label>URL Gambar Produk:</label><br>
-            <input type="text" placeholder="Masukkan link gambar"><br><br>
+                <label>URL Gambar Produk:</label>
+                <input type="text" placeholder="https://contoh-link-gambar.com/foto.jpg">
 
-            <button type="button">Simpan Produk ke Database</button>
-        </form>
+                <button type="button" onclick="alert('Produk berhasil disimpan ke Database (Simulasi)')">Simpan Produk ke Database</button>
+            </form>
+        </div>
     </div>
 
-    <!-- Backsound jalan terus secara sembunyi -->
+    <!-- Backsound sembunyi -->
     <audio src="sound.mp3" autoplay loop hidden></audio>
 
 </body>
