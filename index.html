@@ -4,59 +4,122 @@
     <meta charset="UTF-8">
     <title>GadgetStore Management System</title>
     <style>
-        /* Sedikit styling biar form loginnya rapi */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .container {
+            display: flex;
+            gap: 30px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
         .login-box {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+            width: 280px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .login-box:hover {
+            transform: translateY(-5px);
+        }
+        .login-box h3 {
+            margin-top: 0;
+            color: #1e293b;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px 0;
             border: 1px solid #ccc;
-            padding: 20px;
-            width: 250px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 15px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        .audio-container {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
+
     <header>
-        <h1>GadgetStore Management System</h1>
+        <h1>GadgetStore System</h1>
     </header>
 
-    <h2>Pilih Akses Masuk:</h2>
+    <div class="container">
+        <!-- Kotak Login Khusus Admin -->
+        <div class="login-box">
+            <h3>Login Admin</h3>
+            <div style="text-align: left;">
+                <label>Username:</label>
+                <input type="text" id="username" placeholder="Masukkan username">
+                
+                <label>Password:</label>
+                <input type="password" id="password" placeholder="Masukkan password">
+            </div>
+            <button onclick="loginAdmin()">Masuk sebagai Admin</button>
+        </div>
 
-    <!-- Kotak Login Khusus Admin -->
-    <div class="login-box">
-        <h3>Login Admin</h3>
-        <label>Username:</label><br>
-        <input type="text" id="username" placeholder="Masukkan username"><br><br>
-        
-        <label>Password:</label><br>
-        <input type="password" id="password" placeholder="Masukkan password"><br><br>
-        
-        <button onclick="loginAdmin()">Masuk sebagai Admin</button>
-    </div>
-
-    <!-- Akses Langsung Khusus Pembeli -->
-    <div class="login-box">
-        <h3>Akses Pembeli</h3>
-        <p>Belanja tanpa perlu login.</p>
-        <a href="user.html"><button>Masuk sebagai Pembeli</button></a>
+        <!-- Akses Langsung Khusus Pembeli -->
+        <div class="login-box">
+            <h3>Akses Pembeli</h3>
+            <p style="color: #64748b; margin-bottom: 25px; font-size: 14px;">Jelajahi katalog dan mulai belanja tanpa perlu login ke sistem.</p>
+            <a href="user.html"><button style="background-color: #10b981;">Masuk sebagai Pembeli</button></a>
+        </div>
     </div>
 
     <!-- Backsound -->
-    <br>
-    <audio src="sound.mp3" autoplay loop controls></audio>
-    <p><i>*Catatan: Tombol play dimunculkan karena browser kadang memblokir putar otomatis.</i></p>
+    <div class="audio-container">
+        <audio src="sound.mp3" autoplay loop controls></audio>
+        <p><i>*Putar musik untuk pengalaman terbaik</i></p>
+    </div>
 
     <!-- Logika JavaScript untuk ngecek Password -->
     <script>
         function loginAdmin() {
-            // Mengambil teks yang diketik user
             var inputUser = document.getElementById("username").value;
             var inputPass = document.getElementById("password").value;
 
-            // Mengecek apakah cocok dengan admin & qwerty123
             if (inputUser === "admin" && inputPass === "qwerty123") {
-                alert("Login berhasil! Mengalihkan ke Halaman Admin...");
-                window.location.href = "admin.html"; // Mengarahkan ke file admin.html
+                window.location.href = "admin.html"; 
             } else {
                 alert("Gagal login! Username atau Password salah.");
             }
