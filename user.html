@@ -145,7 +145,7 @@
         .cart-sidebar {
             position: fixed;
             top: 0;
-            right: -400px; /* Sembunyikan di luar layar */
+            right: -400px; 
             width: 320px;
             height: 100%;
             background: white;
@@ -155,7 +155,7 @@
             z-index: 1000;
             overflow-y: auto;
         }
-        .cart-sidebar.active { right: 0; } /* Munculkan saat active */
+        .cart-sidebar.active { right: 0; }
         
         .close-cart {
             cursor: pointer;
@@ -167,7 +167,13 @@
         .cart-sidebar h3 { border-bottom: 1px solid #ddd; padding-bottom: 10px;}
         
         #cart-items { min-height: 50px; margin-bottom: 15px; font-size: 14px;}
-        .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px;}
+        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 5px;}
+        
+        /* Desain Tombol Hapus Item */
+        .btn-hapus-item {
+            background: none; border: none; color: #ef4444; font-size: 12px;
+            cursor: pointer; padding: 0 5px; text-decoration: underline;
+        }
         
         .cart-total {
             text-align: right;
@@ -183,15 +189,44 @@
             border: 1px solid #ccc; border-radius: 4px; font-family: inherit;
         }
         .btn-proses {
-            background-color: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            padding: 8px 12px;
+            background-color: #22c55e;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
             margin-top: 15px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             font-weight: bold;
+            font-size: 15px;
+            transition: 0.3s;
         }
-        .btn-proses:hover { background-color: #e2e8f0; }
+        .btn-proses:hover { background-color: #16a34a; }
+
+        /* ===============================
+           MODAL PESANAN BERHASIL
+           =============================== */
+        .modal-overlay {
+            display: none; /* Sembunyikan awalnya */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 12px; text-align: center;
+            max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-content h2 { color: #22c55e; margin-top: 0; font-size: 24px;}
+        .modal-content p { color: #475569; line-height: 1.6; margin-bottom: 25px;}
+        .btn-tutup-modal {
+            background: #2563eb; color: white; border: none; padding: 10px 25px;
+            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px;
+        }
+        .btn-tutup-modal:hover { background: #1d4ed8; }
+
     </style>
 </head>
 <body>
@@ -283,13 +318,13 @@
             <h3>Data Checkout</h3>
             
             <label>Nama Lengkap:</label>
-            <input type="text" id="nama">
+            <input type="text" id="nama" placeholder="Masukkan nama kamu">
             
             <label>No. WhatsApp:</label>
-            <input type="text" id="nowa">
+            <input type="text" id="nowa" placeholder="08xx xxxx xxxx">
             
             <label>Alamat:</label>
-            <textarea id="alamat" rows="3"></textarea>
+            <textarea id="alamat" rows="3" placeholder="Alamat pengiriman lengkap..."></textarea>
             
             <label>Metode Pembayaran:</label>
             <select id="metode">
@@ -299,14 +334,23 @@
                 <option value="E-Wallet">E-Wallet (OVO/Dana/Gopay)</option>
             </select>
             
-            <button class="btn-proses" onclick="prosesPesanan()">Proses Pesanan</button>
+            <button class="btn-proses" onclick="prosesPesanan()">🚀 Proses Pesanan</button>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP PESANAN SUKSES -->
+    <div id="modal-sukses" class="modal-overlay">
+        <div class="modal-content">
+            <h2>🎉 Hore, Pesanan Berhasil! 🎉</h2>
+            <p id="pesan-sukses-detail"></p>
+            <button class="btn-tutup-modal" onclick="tutupModalSukses()">Tutup & Kembali Belanja</button>
         </div>
     </div>
 
     <!-- Backsound sembunyi -->
     <audio src="sound.mp3" autoplay loop hidden></audio>
 
-    <!-- Script JavaScript untuk logika Keranjang -->
+    <!-- Script JavaScript -->
     <script>
         let keranjang = [];
 
@@ -324,12 +368,20 @@
         function addToCart(namaProduk, hargaProduk) {
             keranjang.push({ nama: namaProduk, harga: hargaProduk });
             updateKeranjang();
-            alert(namaProduk + " berhasil ditambahkan ke keranjang!");
+            // Animasi kecil di cart icon (opsional)
+            const cartIcon = document.getElementById('cart-count');
+            cartIcon.style.transform = "scale(1.5)";
+            setTimeout(() => cartIcon.style.transform = "scale(1)", 200);
         }
 
-        // Update tampilan keranjang (Angka, Daftar Item, Total Harga)
+        // FITUR BARU: Fungsi Hapus 1 per 1 barang dari keranjang
+        function hapusItem(index) {
+            keranjang.splice(index, 1); // Menghapus item berdasarkan nomor urut (index)
+            updateKeranjang();
+        }
+
+        // Update tampilan keranjang 
         function updateKeranjang() {
-            // Update angka di tombol atas
             document.getElementById('cart-count').innerText = keranjang.length;
             
             const cartItemsDiv = document.getElementById('cart-items');
@@ -337,14 +389,24 @@
             
             let total = 0;
             
-            // Render setiap produk
-            keranjang.forEach(item => {
-                total += item.harga;
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'cart-item';
-                itemDiv.innerHTML = `<span>${item.nama}</span> <span>${formatRupiah(item.harga)}</span>`;
-                cartItemsDiv.appendChild(itemDiv);
-            });
+            if (keranjang.length === 0) {
+                cartItemsDiv.innerHTML = '<p style="color:#94a3b8; text-align:center;">Keranjang kosong.</p>';
+            } else {
+                // Render setiap produk + Tombol Hapus
+                keranjang.forEach((item, index) => {
+                    total += item.harga;
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'cart-item';
+                    itemDiv.innerHTML = `
+                        <div>
+                            <strong>${item.nama}</strong><br>
+                            <button class="btn-hapus-item" onclick="hapusItem(${index})">🗑️ Hapus</button>
+                        </div>
+                        <span>${formatRupiah(item.harga)}</span>
+                    `;
+                    cartItemsDiv.appendChild(itemDiv);
+                });
+            }
             
             // Update Total harga
             document.getElementById('total-price').innerText = formatRupiah(total);
@@ -367,16 +429,26 @@
                 return;
             }
             
-            alert(`Pesanan Berhasil Diproses!\n\nNama: ${nama}\nTotal Pembayaran: ${document.getElementById('total-price').innerText}\nMetode: ${metode}\n\nTerima kasih telah berbelanja di GadgetStore!`);
+            const totalHarga = document.getElementById('total-price').innerText;
             
-            // Bersihkan keranjang & form setelah sukses
+            // FITUR BARU: Tampilkan Modal Ucapan Sukses
+            const pesanDetail = `Terima kasih <b>${nama}</b>! <br> Pesanan gadget kamu senilai <b>${totalHarga}</b> menggunakan metode <b>${metode}</b> sedang kami proses menuju alamatmu.`;
+            document.getElementById('pesan-sukses-detail').innerHTML = pesanDetail;
+            document.getElementById('modal-sukses').style.display = 'flex';
+            
+            // Bersihkan keranjang & form setelah sukses diproses
             keranjang = [];
             document.getElementById('nama').value = '';
             document.getElementById('nowa').value = '';
             document.getElementById('alamat').value = '';
             document.getElementById('metode').value = '';
             updateKeranjang();
-            toggleCart(); // Tutup sidebar
+            document.getElementById('cart-sidebar').classList.remove('active'); // Sembunyikan sidebar otomatis
+        }
+
+        // Fungsi menutup Popup Sukses
+        function tutupModalSukses() {
+            document.getElementById('modal-sukses').style.display = 'none';
         }
     </script>
 </body>
