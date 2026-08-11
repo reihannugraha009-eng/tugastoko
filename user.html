@@ -22,15 +22,45 @@
             margin: 30px auto;
             padding: 0 20px;
         }
+        
+        /* Area atas untuk navigasi & keranjang */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
         .back-btn {
             display: inline-block;
-            margin-bottom: 20px;
             color: #2563eb;
             text-decoration: none;
             font-weight: bold;
         }
         .back-btn:hover { text-decoration: underline; }
         
+        /* Tombol Keranjang di kanan atas */
+        .cart-icon {
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            position: relative;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        #cart-count {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+
         .kartu-pembatas {
             background: white;
             box-shadow: 0 8px 25px rgba(0,0,0,0.05);
@@ -94,16 +124,74 @@
         /* Tombol Beli */
         .btn-beli {
             display: block;
+            width: 100%;
             background-color: #2563eb;
             color: white;
             text-align: center;
             text-decoration: none;
             padding: 12px;
+            border: none;
             border-radius: 8px;
             font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
             transition: 0.3s;
         }
         .btn-beli:hover { background-color: #1d4ed8; }
+
+        /* ===============================
+           SIDEBAR KERANJANG (CHECKOUT)
+           =============================== */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px; /* Sembunyikan di luar layar */
+            width: 320px;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            padding: 20px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .cart-sidebar.active { right: 0; } /* Munculkan saat active */
+        
+        .close-cart {
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .cart-sidebar h3 { border-bottom: 1px solid #ddd; padding-bottom: 10px;}
+        
+        #cart-items { min-height: 50px; margin-bottom: 15px; font-size: 14px;}
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px;}
+        
+        .cart-total {
+            text-align: right;
+            font-weight: bold;
+            font-size: 18px;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+        
+        .checkout-form label { display: block; margin-top: 10px; font-size: 14px;}
+        .checkout-form input, .checkout-form textarea, .checkout-form select {
+            width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;
+            border: 1px solid #ccc; border-radius: 4px; font-family: inherit;
+        }
+        .btn-proses {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .btn-proses:hover { background-color: #e2e8f0; }
     </style>
 </head>
 <body>
@@ -112,111 +200,184 @@
     </header>
 
     <div class="container">
-        <a href="index.html" class="back-btn">⬅ Kembali ke Menu Utama</a>
+        
+        <div class="top-bar">
+            <a href="index.html" class="back-btn">⬅ Kembali ke Menu Utama</a>
+            <div class="cart-icon" onclick="toggleCart()">
+                🛒 Keranjang <span id="cart-count">0</span>
+            </div>
+        </div>
 
         <div class="kartu-pembatas">
             <h2>Katalog Produk</h2>
             
             <div class="katalog-grid">
                 
-                <!-- Produk 1: Xiaomi 17T -->
+                <!-- Produk 1 -->
                 <div class="kartu-produk">
                     <img src="Screenshot 2026-08-11 123218.png" alt="Xiaomi 17T">
                     <h3>Xiaomi 17T</h3>
                     <div class="harga">Rp 8.500.000</div>
                     <div class="deskripsi">Performa gahar dengan kamera Leica. Cocok untuk fotografi profesional dan gaming berat dengan harga terjangkau.</div>
-                    <!-- Menggunakan iframe agar YouTube bisa diputar -->
                     <iframe src="https://www.youtube.com/embed/IPl-yBvP79U" allowfullscreen></iframe>
-                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                    <button class="btn-beli" onclick="addToCart('Xiaomi 17T', 8500000)">🛒 Beli Sekarang</button>
                 </div>
 
-                <!-- Produk 2: Samsung Galaxy S26 Ultra -->
+                <!-- Produk 2 -->
                 <div class="kartu-produk">
                     <img src="Screenshot 2026-08-11 123433.png" alt="Samsung Galaxy S26 Ultra">
                     <h3>Samsung Galaxy S26 Ultra</h3>
                     <div class="harga">Rp 22.000.000</div>
                     <div class="deskripsi">HP Flagship terbaik dengan S-Pen dan teknologi AI canggih. Layar Dynamic AMOLED dan kamera superior.</div>
                     <iframe src="https://www.youtube.com/embed/q7Ura_0SwA0" allowfullscreen></iframe>
-                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                    <button class="btn-beli" onclick="addToCart('Samsung Galaxy S26 Ultra', 22000000)">🛒 Beli Sekarang</button>
                 </div>
 
-                <!-- Produk 3: iPhone 17 -->
+                <!-- Produk 3 -->
                 <div class="kartu-produk">
                     <img src="Screenshot 2026-08-11 123311.png" alt="iPhone 17">
                     <h3>Apple iPhone 17</h3>
                     <div class="harga">Rp 16.500.000</div>
                     <div class="deskripsi">Generasi terbaru iPhone dengan performa chipset ngebut, desain elegan, dan integrasi ekosistem Apple yang mulus.</div>
                     <iframe src="https://www.youtube.com/embed/rkLpVyRGCPw" allowfullscreen></iframe>
-                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                    <button class="btn-beli" onclick="addToCart('Apple iPhone 17', 16500000)">🛒 Beli Sekarang</button>
                 </div>
 
-                <!-- Produk 4: Vivo X300 Pro -->
+                <!-- Produk 4 -->
                 <div class="kartu-produk">
                     <img src="Screenshot 2026-08-11 123240.png" alt="Vivo X300 Pro">
                     <h3>Vivo X300 Pro</h3>
                     <div class="harga">Rp 14.000.000</div>
                     <div class="deskripsi">Perdana dengan Dimensity 9500. Sangat cocok untuk kamu yang mencari hasil jepretan kamera setara DSLR.</div>
                     <iframe src="https://www.youtube.com/embed/-I2STJrgxcA" allowfullscreen></iframe>
-                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                    <button class="btn-beli" onclick="addToCart('Vivo X300 Pro', 14000000)">🛒 Beli Sekarang</button>
                 </div>
 
-                <!-- Produk 5: POCO X8 Pro -->
+                <!-- Produk 5 -->
                 <div class="kartu-produk">
                     <img src="Screenshot 2026-08-11 120704.png" alt="POCO X8 Pro">
                     <h3>POCO X8 Pro Max</h3>
                     <div class="harga">Rp 6.000.000</div>
                     <div class="deskripsi">Raja performa kelas menengah. Dilengkapi baterai 8500mAh dan HyperCharge 100W, bikin mabar makin lancar.</div>
                     <iframe src="https://www.youtube.com/embed/oM9v6P41tRA" allowfullscreen></iframe>
-                    <a href="#" class="btn-beli">🛒 Beli Sekarang</a>
+                    <button class="btn-beli" onclick="addToCart('POCO X8 Pro Max', 6000000)">🛒 Beli Sekarang</button>
                 </div>
-                <!-- Tombol Keranjang Melayang -->
-<button class="floating-cart" onclick="bukaModal()">🛒 Keranjang (<span id="jumlah-item">0</span>)</button>
 
-<!-- Pop-up Keranjang & Form Checkout -->
-<div id="modalKeranjang" class="modal-overlay">
-    <div class="modal-box">
-        <span class="close-btn" onclick="tutupModal()">✖ Tutup</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR KERANJANG -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <span class="close-cart" onclick="toggleCart()">✕ Tutup</span>
         <h3>Keranjang Belanja</h3>
         
-        <ul id="listKeranjang" style="list-style: none; padding: 0;"></ul>
-        <div style="font-size: 18px; font-weight: bold; text-align: right; margin-bottom: 20px; color: #ef4444;">
-            Total: Rp <span id="total-bayar">0</span>
+        <!-- List Produk yang dibeli -->
+        <div id="cart-items"></div>
+        
+        <div class="cart-total">
+            Total: <span id="total-price">Rp 0</span>
         </div>
-
-        <h3>Data Checkout</h3>
-        <form id="formCheckout" onsubmit="prosesCheckout(event)">
-            <div class="form-grup">
-                <label>Nama Lengkap:</label>
-                <input type="text" id="namaPembeli" required>
-            </div>
-            <div class="form-grup">
-                <label>No. WhatsApp:</label>
-                <input type="number" id="waPembeli" required>
-            </div>
-            <div class="form-grup">
-                <label>Alamat:</label>
-                <textarea id="alamatPembeli" required rows="3"></textarea>
-            </div>
-            <div class="form-grup">
-                <label>Metode Pembayaran:</label>
-                <select id="metodePembayaran" required>
-                    <option value="" disabled selected>-- Pilih Metode --</option>
-                    <option value="COD">COD</option>
-                    <option value="Transfer">Transfer Bank</option>
-                    <option value="QRIS">QRIS</option>
-                </select>
-            </div>
-            <button type="submit" class="btn-checkout">Proses Pesanan</button>
-        </form>
-    </div>
-</div>
-
-            </div>
+        
+        <div class="checkout-form">
+            <h3>Data Checkout</h3>
+            
+            <label>Nama Lengkap:</label>
+            <input type="text" id="nama">
+            
+            <label>No. WhatsApp:</label>
+            <input type="text" id="nowa">
+            
+            <label>Alamat:</label>
+            <textarea id="alamat" rows="3"></textarea>
+            
+            <label>Metode Pembayaran:</label>
+            <select id="metode">
+                <option value="">-- Pilih Metode --</option>
+                <option value="Transfer Bank">Transfer Bank</option>
+                <option value="COD">Bayar di Tempat (COD)</option>
+                <option value="E-Wallet">E-Wallet (OVO/Dana/Gopay)</option>
+            </select>
+            
+            <button class="btn-proses" onclick="prosesPesanan()">Proses Pesanan</button>
         </div>
     </div>
 
     <!-- Backsound sembunyi -->
     <audio src="sound.mp3" autoplay loop hidden></audio>
 
+    <!-- Script JavaScript untuk logika Keranjang -->
+    <script>
+        let keranjang = [];
+
+        // Fungsi buka/tutup sidebar keranjang
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('active');
+        }
+
+        // Format angka jadi Rupiah
+        function formatRupiah(angka) {
+            return "Rp " + angka.toLocaleString('id-ID');
+        }
+
+        // Fungsi tambah barang ke keranjang
+        function addToCart(namaProduk, hargaProduk) {
+            keranjang.push({ nama: namaProduk, harga: hargaProduk });
+            updateKeranjang();
+            alert(namaProduk + " berhasil ditambahkan ke keranjang!");
+        }
+
+        // Update tampilan keranjang (Angka, Daftar Item, Total Harga)
+        function updateKeranjang() {
+            // Update angka di tombol atas
+            document.getElementById('cart-count').innerText = keranjang.length;
+            
+            const cartItemsDiv = document.getElementById('cart-items');
+            cartItemsDiv.innerHTML = ''; 
+            
+            let total = 0;
+            
+            // Render setiap produk
+            keranjang.forEach(item => {
+                total += item.harga;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item';
+                itemDiv.innerHTML = `<span>${item.nama}</span> <span>${formatRupiah(item.harga)}</span>`;
+                cartItemsDiv.appendChild(itemDiv);
+            });
+            
+            // Update Total harga
+            document.getElementById('total-price').innerText = formatRupiah(total);
+        }
+
+        // Fungsi memproses pesanan
+        function prosesPesanan() {
+            if (keranjang.length === 0) {
+                alert("Keranjang masih kosong, silakan pilih produk dulu.");
+                return;
+            }
+            
+            const nama = document.getElementById('nama').value;
+            const nowa = document.getElementById('nowa').value;
+            const alamat = document.getElementById('alamat').value;
+            const metode = document.getElementById('metode').value;
+            
+            if(!nama || !nowa || !alamat || !metode) {
+                alert("Mohon lengkapi semua Data Checkout terlebih dahulu!");
+                return;
+            }
+            
+            alert(`Pesanan Berhasil Diproses!\n\nNama: ${nama}\nTotal Pembayaran: ${document.getElementById('total-price').innerText}\nMetode: ${metode}\n\nTerima kasih telah berbelanja di GadgetStore!`);
+            
+            // Bersihkan keranjang & form setelah sukses
+            keranjang = [];
+            document.getElementById('nama').value = '';
+            document.getElementById('nowa').value = '';
+            document.getElementById('alamat').value = '';
+            document.getElementById('metode').value = '';
+            updateKeranjang();
+            toggleCart(); // Tutup sidebar
+        }
+    </script>
 </body>
 </html>
