@@ -1,1 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>GadgetStore Management System</title>
+    <style>
+        /* Sedikit styling biar form loginnya rapi */
+        .login-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GadgetStore Management System</h1>
+    </header>
 
+    <h2>Pilih Akses Masuk:</h2>
+
+    <!-- Kotak Login Khusus Admin -->
+    <div class="login-box">
+        <h3>Login Admin</h3>
+        <label>Username:</label><br>
+        <input type="text" id="username" placeholder="Masukkan username"><br><br>
+        
+        <label>Password:</label><br>
+        <input type="password" id="password" placeholder="Masukkan password"><br><br>
+        
+        <button onclick="loginAdmin()">Masuk sebagai Admin</button>
+    </div>
+
+    <!-- Akses Langsung Khusus Pembeli -->
+    <div class="login-box">
+        <h3>Akses Pembeli</h3>
+        <p>Belanja tanpa perlu login.</p>
+        <a href="user.html"><button>Masuk sebagai Pembeli</button></a>
+    </div>
+
+    <!-- Backsound -->
+    <br>
+    <audio src="sound.mp3" autoplay loop controls></audio>
+    <p><i>*Catatan: Tombol play dimunculkan karena browser kadang memblokir putar otomatis.</i></p>
+
+    <!-- Logika JavaScript untuk ngecek Password -->
+    <script>
+        function loginAdmin() {
+            // Mengambil teks yang diketik user
+            var inputUser = document.getElementById("username").value;
+            var inputPass = document.getElementById("password").value;
+
+            // Mengecek apakah cocok dengan admin & qwerty123
+            if (inputUser === "admin" && inputPass === "qwerty123") {
+                alert("Login berhasil! Mengalihkan ke Halaman Admin...");
+                window.location.href = "admin.html"; // Mengarahkan ke file admin.html
+            } else {
+                alert("Gagal login! Username atau Password salah.");
+            }
+        }
+    </script>
+
+</body>
+</html>
