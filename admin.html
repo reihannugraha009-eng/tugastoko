@@ -1,58 +1,153 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - GadgetStore</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-btn:hover { text-decoration: underline; }
+        
+        .kartu-pembatas {
+            background: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 30px 40px;
+        }
+        .kartu-pembatas h2 {
+            margin-top: 0;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        label {
+            font-weight: bold;
+            color: #475569;
+            display: block;
+            margin-top: 15px;
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        button {
+            margin-top: 30px;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        button:hover { background-color: #059669; }
+    </style>
 </head>
 <body>
-
-    <!-- Bagian Header -->
     <header>
-        <h1 align="center">GadgetStore System</h1>
+        <h1>GadgetStore System</h1>
     </header>
 
-    <hr>
+    <div class="container">
+        <a href="index.html" class="back-btn">⬅ Kembali ke Menu Utama</a>
 
-    <!-- Bagian Konten Utama -->
-    <main>
-        <a href="index.html">← Kembali ke Menu Utama</a>
-        
-        <section>
+        <div class="kartu-pembatas">
             <h2>Area Kerja Admin</h2>
-            <p>Gunakan formulir ini untuk menambahkan inventaris produk baru.</p>
+            <p style="color: #64748b;">Gunakan formulir ini untuk menambahkan inventaris produk baru.</p>
             
-            <!-- Form Input Produk -->
-            <form action="" method="POST">
-                
-                <p>
-                    <label for="nama_produk"><b>Nama Produk:</b></label><br>
-                    <input type="text" id="nama_produk" name="nama_produk" placeholder="Contoh: Laptop UltraBook Pro" size="50" required>
-                </p>
+            <form id="formAdmin">
+                <label>Nama Produk:</label>
+                <input type="text" id="inputNama" placeholder="Contoh: Laptop UltraBook Pro" required>
 
-                <p>
-                    <label for="deskripsi_harga"><b>Deskripsi & Harga Produk:</b></label><br>
-                    <textarea id="deskripsi_harga" name="deskripsi_harga" placeholder="Masukkan deskripsi spesifikasi dan harga..." rows="5" cols="52" required></textarea>
-                </p>
+                <!-- Dipisah agar mudah memformat harga nanti -->
+                <label>Harga Produk (Angka saja):</label>
+                <input type="number" id="inputHarga" placeholder="Contoh: 15000000" required>
 
-                <p>
-                    <label for="url_gambar"><b>URL Gambar Produk:</b></label><br>
-                    <input type="url" id="url_gambar" name="url_gambar" placeholder="https://contoh-link-gambar.com/foto.jpg" size="50" required>
-                </p>
+                <label>Deskripsi Produk:</label>
+                <textarea id="inputDeskripsi" rows="4" placeholder="Masukkan deskripsi spesifikasi..." required></textarea>
 
-                <p>
-                    <label for="url_video"><b>URL Video Produk:</b></label><br>
-                    <input type="url" id="url_video" name="url_video" placeholder="Contoh: https://www.youtube.com/embed/xxxx" size="50" required>
-                </p>
+                <label>URL Gambar Produk:</label>
+                <input type="text" id="inputGambar" placeholder="https://contoh-link-gambar.com/foto.jpg" required>
 
-                <p>
-                    <button type="submit"><b>Simpan Produk ke Database</b></button>
-                </p>
+                <label>URL Video Produk (Embed Youtube):</label>
+                <input type="text" id="inputVideo" placeholder="Contoh: https://www.youtube.com/embed/xxxx" required>
 
+                <button type="button" onclick="simpanProduk()">Simpan Produk ke Database</button>
             </form>
-        </section>
-    </main>
+        </div>
+    </div>
 
+    <!-- Script JavaScript untuk menyimpan ke localStorage -->
+    <script>
+        function simpanProduk() {
+            // 1. Ambil nilai dari inputan
+            const nama = document.getElementById('inputNama').value;
+            const harga = document.getElementById('inputHarga').value;
+            const deskripsi = document.getElementById('inputDeskripsi').value;
+            const gambar = document.getElementById('inputGambar').value;
+            const video = document.getElementById('inputVideo').value;
+
+            // Validasi: Pastikan tidak ada yang kosong
+            if(!nama || !harga || !deskripsi || !gambar || !video) {
+                alert("Semua kolom harus diisi!");
+                return;
+            }
+
+            // 2. Buat objek produk baru
+            const produkBaru = {
+                nama: nama,
+                harga: parseInt(harga),
+                deskripsi: deskripsi,
+                gambar: gambar,
+                video: video
+            };
+
+            // 3. Ambil data produk yang sudah ada di localStorage, kalau kosong buat array baru
+            let dbProduk = JSON.parse(localStorage.getItem('dataProdukGadgetStore')) || [];
+
+            // 4. Masukkan produk baru ke dalam array
+            dbProduk.push(produkBaru);
+
+            // 5. Simpan kembali ke localStorage
+            localStorage.setItem('dataProdukGadgetStore', JSON.stringify(dbProduk));
+
+            alert(`Sukses! Produk "${nama}" berhasil ditambahkan.`);
+            
+            // 6. Kosongkan form setelah berhasil
+            document.getElementById('formAdmin').reset();
+        }
+    </script>
 </body>
 </html>
