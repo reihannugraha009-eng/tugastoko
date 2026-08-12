@@ -110,44 +110,33 @@
     </div>
 
     <!-- Script JavaScript untuk menyimpan ke localStorage -->
+   <!-- Script untuk mengambil data dari Admin (localStorage) -->
     <script>
-        function simpanProduk() {
-            // 1. Ambil nilai dari inputan
-            const nama = document.getElementById('inputNama').value;
-            const harga = document.getElementById('inputHarga').value;
-            const deskripsi = document.getElementById('inputDeskripsi').value;
-            const gambar = document.getElementById('inputGambar').value;
-            const video = document.getElementById('inputVideo').value;
-
-            // Validasi: Pastikan tidak ada yang kosong
-            if(!nama || !harga || !deskripsi || !gambar || !video) {
-                alert("Semua kolom harus diisi!");
-                return;
-            }
-
-            // 2. Buat objek produk baru
-            const produkBaru = {
-                nama: nama,
-                harga: parseInt(harga),
-                deskripsi: deskripsi,
-                gambar: gambar,
-                video: video
-            };
-
-            // 3. Ambil data produk yang sudah ada di localStorage, kalau kosong buat array baru
+        window.addEventListener('load', function() {
+            // Cari wadah tempat barang-barang ditampilkan
+            const wadahKatalog = document.querySelector('.katalog-grid');
+            
+            // Buka laci 'dataProdukGadgetStore' yang disimpan oleh Admin
             let dbProduk = JSON.parse(localStorage.getItem('dataProdukGadgetStore')) || [];
 
-            // 4. Masukkan produk baru ke dalam array
-            dbProduk.push(produkBaru);
-
-            // 5. Simpan kembali ke localStorage
-            localStorage.setItem('dataProdukGadgetStore', JSON.stringify(dbProduk));
-
-            alert(`Sukses! Produk "${nama}" berhasil ditambahkan.`);
-            
-            // 6. Kosongkan form setelah berhasil
-            document.getElementById('formAdmin').reset();
-        }
+            // Tampilkan satu per satu barang baru di bawah 6 barang lama
+            dbProduk.forEach(produk => {
+                const kartuHtml = `
+                    <div class="kartu-produk">
+                        <img src="${produk.gambar}" alt="${produk.nama}">
+                        <h3>${produk.nama}</h3>
+                        <div class="harga">Rp ${produk.harga.toLocaleString('id-ID')}</div>
+                        <div class="deskripsi">${produk.deskripsi}</div>
+                        <iframe src="${produk.video}" allowfullscreen></iframe>
+                        <button class="btn-beli" onclick="addToCart('${produk.nama}', ${produk.harga})">🛒 Beli Sekarang</button>
+                    </div>
+                `;
+                // Tambahkan kartu ke dalam katalog tanpa menghapus yang lama
+                if (wadahKatalog) {
+                    wadahKatalog.innerHTML += kartuHtml;
+                }
+            });
+        });
     </script>
 </body>
 </html>
