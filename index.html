@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -130,8 +131,8 @@
         <p>Platform E-Commerce Gadget & Aksesoris Terlengkap Masa Kini</p>
 
         <div class="menu-container">
-            <!-- Tombol Admin -->
-            <a href="admin.html" class="menu-box admin">
+            <!-- TOMBOL ADMIN SUDAH DIUBAH BIAR MINTA PASSWORD -->
+            <a href="#" onclick="loginAdmin(event)" class="menu-box admin">
                 <div class="icon">🛠️</div>
                 <div class="text">Admin Toko</div>
             </a>
@@ -153,5 +154,34 @@
         </div>
     </div>
 
+    <!-- SCRIPT LOGIKA LOGIN -->
+    <script>
+        function loginAdmin(event) {
+            // Mencegah link langsung pindah halaman
+            event.preventDefault(); 
+
+            // Munculin pop-up minta Username
+            const user = prompt("Silakan masukkan Username Admin:");
+            
+            // Kalau diklik Cancel, batalkan proses
+            if (user === null) return; 
+
+            // Cek Username
+            if (user === "admin") {
+                // Munculin pop-up minta Password
+                const pass = prompt("Masukkan Password:");
+                
+                // Cek Password
+                if (pass === "qwerty123") {
+                    alert("Login Berhasil! Selamat datang Bos.");
+                    window.location.href = "admin.html"; // Baru deh pindah ke admin
+                } else if (pass !== null) {
+                    alert("Akses Ditolak! Password salah.");
+                }
+            } else {
+                alert("Akses Ditolak! Username tidak terdaftar.");
+            }
+        }
+    </script>
 </body>
 </html>
