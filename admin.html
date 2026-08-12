@@ -1,154 +1,57 @@
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Panel Admin - GadgetStore</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            margin: 0;
-            padding: 0;
-            color: #333;
+<!-- Contoh Struktur Form di admin.html -->
+<div class="area-kerja-admin">
+    <label>Nama Produk:</label>
+    <input type="text" id="admin-nama" placeholder="Contoh: Laptop UltraBook Pro">
+
+    <label>Harga Produk (Angka Saja):</label>
+    <input type="number" id="admin-harga" placeholder="Contoh: 15000000">
+
+    <label>Deskripsi Produk:</label>
+    <textarea id="admin-deskripsi" placeholder="Masukkan deskripsi spesifikasi..."></textarea>
+
+    <label>URL Gambar Produk:</label>
+    <input type="text" id="admin-gambar" placeholder="Contoh: foto.jpg">
+
+    <label>URL Video Produk:</label>
+    <input type="text" id="admin-video" placeholder="Contoh: https://www.youtube.com/embed/xxxx">
+
+    <button onclick="simpanProduk()">Simpan Produk ke Database</button>
+</div>
+
+<script>
+    function simpanProduk() {
+        // 1. Ambil data dari form
+        const nama = document.getElementById('admin-nama').value;
+        const harga = parseInt(document.getElementById('admin-harga').value);
+        const deskripsi = document.getElementById('admin-deskripsi').value;
+        const gambar = document.getElementById('admin-gambar').value;
+        const video = document.getElementById('admin-video').value;
+
+        if(!nama || !harga || !deskripsi || !gambar || !video) {
+            alert("Mohon lengkapi semua data!");
+            return;
         }
-        header {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-        }
-        .container {
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        .back-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .back-btn:hover { text-decoration: underline; }
+
+        // 2. Buat objek produk
+        const produkBaru = { nama, harga, deskripsi, gambar, video };
+
+        // 3. Ambil data lama dari localStorage (jika ada), jika tidak buat array kosong
+        let daftarProduk = JSON.parse(localStorage.getItem('database_produk')) || [];
+
+        // 4. Masukkan produk baru ke dalam array
+        daftarProduk.push(produkBaru);
+
+        // 5. Simpan kembali ke localStorage
+        localStorage.setItem('database_produk', JSON.stringify(daftarProduk));
+
+        alert("Produk " + nama + " berhasil ditambahkan!");
         
-        .kartu-pembatas {
-            background: white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            border-radius: 12px;
-            padding: 30px 40px;
-        }
-        .kartu-pembatas h2 {
-            margin-top: 0;
-            color: #0f172a;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-        label {
-            font-weight: bold;
-            color: #475569;
-            display: block;
-            margin-top: 15px;
-        }
-        input[type="text"], input[type="number"], textarea {
-            width: 100%;
-            padding: 12px;
-            margin-top: 8px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-        button {
-            margin-top: 30px;
-            background-color: #10b981;
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-        button:hover { background-color: #059669; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>GadgetStore System</h1>
-    </header>
-
-    <div class="container">
-        <a href="index.html" class="back-btn">⬅ Kembali ke Menu Utama</a>
-
-        <div class="kartu-pembatas">
-            <h2>Area Kerja Admin</h2>
-            <p style="color: #64748b;">Gunakan formulir ini untuk menambahkan inventaris produk baru.</p>
-            
-            <form id="formAdmin">
-                <label>Nama Produk:</label>
-                <input type="text" id="inputNama" placeholder="Contoh: Laptop UltraBook Pro" required>
-
-                <!-- Dipisah agar mudah memformat harga nanti -->
-                <label>Harga Produk (Angka saja):</label>
-                <input type="number" id="inputHarga" placeholder="Contoh: 15000000" required>
-
-                <label>Deskripsi Produk:</label>
-                <textarea id="inputDeskripsi" rows="4" placeholder="Masukkan deskripsi spesifikasi..." required></textarea>
-
-                <label>URL Gambar Produk:</label>
-                <input type="text" id="inputGambar" placeholder="https://contoh-link-gambar.com/foto.jpg" required>
-
-                <label>URL Video Produk (Embed Youtube):</label>
-                <input type="text" id="inputVideo" placeholder="Contoh: https://www.youtube.com/embed/xxxx" required>
-
-                <button type="button" onclick="simpanProduk()">Simpan Produk ke Database</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Script JavaScript untuk menyimpan ke localStorage -->
-    <script>
-        function simpanProduk() {
-            // 1. Ambil nilai dari inputan
-            const nama = document.getElementById('inputNama').value;
-            const harga = document.getElementById('inputHarga').value;
-            const deskripsi = document.getElementById('inputDeskripsi').value;
-            const gambar = document.getElementById('inputGambar').value;
-            const video = document.getElementById('inputVideo').value;
-
-            // Validasi: Pastikan tidak ada yang kosong
-            if(!nama || !harga || !deskripsi || !gambar || !video) {
-                alert("Semua kolom harus diisi!");
-                return;
-            }
-
-            // 2. Buat objek produk baru
-            const produkBaru = {
-                nama: nama,
-                harga: parseInt(harga),
-                deskripsi: deskripsi,
-                gambar: gambar,
-                video: video
-            };
-
-            // 3. Ambil data produk yang sudah ada di localStorage, kalau kosong buat array baru
-            let dbProduk = JSON.parse(localStorage.getItem('dataProdukGadgetStore')) || [];
-
-            // 4. Masukkan produk baru ke dalam array
-            dbProduk.push(produkBaru);
-
-            // 5. Simpan kembali ke localStorage
-            localStorage.setItem('dataProdukGadgetStore', JSON.stringify(dbProduk));
-
-            alert(`Sukses! Produk "${nama}" berhasil ditambahkan.`);
-            
-            // 6. Kosongkan form setelah berhasil
-            document.getElementById('formAdmin').reset();
-        }
-    </script>
-</body>
-</html>
+        // Bersihkan form
+        document.getElementById('admin-nama').value = '';
+        document.getElementById('admin-harga').value = '';
+        document.getElementById('admin-deskripsi').value = '';
+        document.getElementById('admin-gambar').value = '';
+        document.getElementById('admin-video').value = '';
+    }
+</script>
