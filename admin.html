@@ -32,7 +32,6 @@
         }
         .back-btn:hover { text-decoration: underline; }
         
-        /* Desain kotak sesuai tugas */
         .kartu-pembatas {
             background: white;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08);
@@ -52,7 +51,7 @@
             display: block;
             margin-top: 15px;
         }
-        input[type="text"], textarea {
+        input[type="text"], input[type="number"], textarea {
             width: 100%;
             padding: 12px;
             margin-top: 8px;
@@ -89,27 +88,67 @@
             <h2>Area Kerja Admin</h2>
             <p style="color: #64748b;">Gunakan formulir ini untuk menambahkan inventaris produk baru.</p>
             
-            <form>
+            <form id="formAdmin">
                 <label>Nama Produk:</label>
-                <input type="text" placeholder="Contoh: Laptop UltraBook Pro">
+                <input type="text" id="inputNama" placeholder="Contoh: Laptop UltraBook Pro" required>
 
-                <label>Deskripsi & Harga Produk:</label>
-                <textarea rows="4" placeholder="Masukkan deskripsi spesifikasi dan harga..."></textarea>
+                <!-- Dipisah agar mudah memformat harga nanti -->
+                <label>Harga Produk (Angka saja):</label>
+                <input type="number" id="inputHarga" placeholder="Contoh: 15000000" required>
+
+                <label>Deskripsi Produk:</label>
+                <textarea id="inputDeskripsi" rows="4" placeholder="Masukkan deskripsi spesifikasi..." required></textarea>
 
                 <label>URL Gambar Produk:</label>
-                <input type="text" placeholder="https://contoh-link-gambar.com/foto.jpg">
+                <input type="text" id="inputGambar" placeholder="https://contoh-link-gambar.com/foto.jpg" required>
 
-                <!-- FITUR BARU: Kolom URL Video -->
-                <label>URL Video Produk:</label>
-                <input type="text" placeholder="Contoh: https://www.youtube.com/embed/xxxx">
+                <label>URL Video Produk (Embed Youtube):</label>
+                <input type="text" id="inputVideo" placeholder="Contoh: https://www.youtube.com/embed/xxxx" required>
 
-                <button type="button" onclick="alert('Produk berhasil disimpan ke Database (Simulasi)')">Simpan Produk ke Database</button>
+                <button type="button" onclick="simpanProduk()">Simpan Produk ke Database</button>
             </form>
         </div>
     </div>
 
-    <!-- Backsound sembunyi -->
-    <audio src="sound.mp3" autoplay loop hidden></audio>
+    <!-- Script JavaScript untuk menyimpan ke localStorage -->
+    <script>
+        function simpanProduk() {
+            // 1. Ambil nilai dari inputan
+            const nama = document.getElementById('inputNama').value;
+            const harga = document.getElementById('inputHarga').value;
+            const deskripsi = document.getElementById('inputDeskripsi').value;
+            const gambar = document.getElementById('inputGambar').value;
+            const video = document.getElementById('inputVideo').value;
 
+            // Validasi: Pastikan tidak ada yang kosong
+            if(!nama || !harga || !deskripsi || !gambar || !video) {
+                alert("Semua kolom harus diisi!");
+                return;
+            }
+
+            // 2. Buat objek produk baru
+            const produkBaru = {
+                nama: nama,
+                harga: parseInt(harga),
+                deskripsi: deskripsi,
+                gambar: gambar,
+                video: video
+            };
+
+            // 3. Ambil data produk yang sudah ada di localStorage, kalau kosong buat array baru
+            let dbProduk = JSON.parse(localStorage.getItem('dataProdukGadgetStore')) || [];
+
+            // 4. Masukkan produk baru ke dalam array
+            dbProduk.push(produkBaru);
+
+            // 5. Simpan kembali ke localStorage
+            localStorage.setItem('dataProdukGadgetStore', JSON.stringify(dbProduk));
+
+            alert(`Sukses! Produk "${nama}" berhasil ditambahkan.`);
+            
+            // 6. Kosongkan form setelah berhasil
+            document.getElementById('formAdmin').reset();
+        }
+    </script>
 </body>
 </html>
