@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -65,7 +66,7 @@
         .btn-konfirmasi:hover { background-color: #16a34a; }
         .status-ok { color: #166534; font-weight: bold; display: inline-block; margin-top: 10px; }
 
-        /* Produk Grid Styles (Baru) */
+        /* Produk Grid Styles */
         .produk-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -79,6 +80,7 @@
         .produk-card img {
             width: 100%; height: 140px; object-fit: contain;
             border-bottom: 1px solid #e2e8f0; margin-bottom: 10px; padding-bottom: 10px;
+            background-color: #f1f5f9; /* Background tambahan biar rapi */
         }
         .produk-card h4 { margin: 0 0 5px 0; font-size: 15px; color: #1e293b; }
         .produk-card .harga { color: #2563eb; font-weight: bold; margin-bottom: 15px; font-size: 14px; }
@@ -132,7 +134,7 @@
             <button class="btn-batal-edit" id="btn-batal" onclick="batalEdit()">Batal Edit</button>
         </div>
 
-        <!-- BAGIAN 3 (BARU): DAFTAR PRODUK YANG SUDAH DITAMBAHKAN -->
+        <!-- BAGIAN 3: DAFTAR PRODUK YANG SUDAH DITAMBAHKAN -->
         <div class="card">
             <h2>🛒 Manajemen Produk Anda</h2>
             <div id="list-produk-admin" class="produk-grid">
@@ -151,8 +153,32 @@
     </div>
 
     <script>
-        // Variabel global untuk mendeteksi apakah sedang mode Edit atau Tambah Baru
         let indexEdit = -1;
+
+        // --- FITUR AUTO-LOAD 6 PRODUK BAWAAN ---
+        function inisialisasiProdukAwal() {
+            let isDefaultLoaded = localStorage.getItem('defaultLoaded');
+            
+            // Kalau belum pernah di-load, masukin 6 produk ini ke database
+            if (!isDefaultLoaded) {
+                const produkDefault = [
+                    { nama: "Vivo X300 Pro", harga: 14000000, deskripsi: "Perdana dengan Dimensity 9500. Sangat cocok untuk kamu yang mencari hasil jepretan kamera setara DSLR.", gambar: "https://dummyimage.com/300x200/cbd5e1/1e293b.png&text=Input+Link+Gambar+Vivo", video: "" },
+                    { nama: "POCO X8 Pro Max", harga: 6000000, deskripsi: "Raja performa kelas menengah. Dilengkapi baterai 8500mAh dan HyperCharge 100W, bikin mabar makin lancar.", gambar: "https://dummyimage.com/300x200/cbd5e1/1e293b.png&text=Input+Link+Gambar+POCO", video: "" },
+                    { nama: "ROG Zephyrus DUO", harga: 130000000, deskripsi: "IN THIS ECONOMY!!??", gambar: "https://dummyimage.com/300x200/cbd5e1/1e293b.png&text=Input+Link+Gambar+ROG", video: "" },
+                    { nama: "Xiaomi 17T", harga: 8500000, deskripsi: "Performa gahar dengan kamera Leica. Cocok untuk fotografi profesional dan gaming berat dengan harga terjangkau.", gambar: "https://dummyimage.com/300x200/cbd5e1/1e293b.png&text=Input+Link+Gambar+Xiaomi", video: "" },
+                    { nama: "Samsung Galaxy S26 Ultra", harga: 22000000, deskripsi: "HP Flagship terbaik dengan S-Pen dan teknologi AI canggih. Layar Dynamic AMOLED dan kamera superior.", gambar: "https://dummyimage.com/300x200/cbd5e1/1e293b.png&text=Input+Link+Gambar+Samsung", video: "" },
+                    { nama: "Apple iPhone 17", harga: 16500000, deskripsi: "Generasi terbaru iPhone dengan performa chipset ngebut, desain elegan, dan integrasi ekosistem Apple yang mulus.", gambar: "https://dummyimage.com/300x200/cbd5e1/1e293b.png&text=Input+Link+Gambar+iPhone", video: "" }
+                ];
+
+                let dataProdukLama = JSON.parse(localStorage.getItem('dataProduk')) || [];
+                
+                // Gabungkan produk lama (seperti Tecno) dengan ke-6 produk bawaan di awal
+                let gabunganProduk = [...produkDefault, ...dataProdukLama];
+                
+                localStorage.setItem('dataProduk', JSON.stringify(gabunganProduk));
+                localStorage.setItem('defaultLoaded', 'true'); // Kasih tanda biar nggak ke-load dobel di kemudian hari
+            }
+        }
 
         // --- 1. LOGIKA SIMPAN & UPDATE PRODUK ---
         function simpanProduk() {
@@ -178,20 +204,15 @@
             let dataProduk = JSON.parse(localStorage.getItem('dataProduk')) || [];
 
             if (indexEdit === -1) {
-                // Mode Tambah Baru
                 dataProduk.push(produkData);
                 alert("Berhasil! Produk telah ditambahkan.");
             } else {
-                // Mode Update Data
                 dataProduk[indexEdit] = produkData;
                 alert("Berhasil! Data produk telah diperbarui.");
-                batalEdit(); // Kembalikan ke mode tambah
+                batalEdit();
             }
 
-            // Simpan ke localStorage
             localStorage.setItem('dataProduk', JSON.stringify(dataProduk));
-            
-            // Kosongkan form dan refresh daftar
             kosongkanForm();
             muatDaftarProduk();
         }
@@ -201,14 +222,12 @@
             let dataProduk = JSON.parse(localStorage.getItem('dataProduk')) || [];
             let produkPilihan = dataProduk[index];
 
-            // Masukkan data lama ke form
             document.getElementById('admin-nama').value = produkPilihan.nama;
             document.getElementById('admin-harga').value = produkPilihan.harga;
             document.getElementById('admin-deskripsi').value = produkPilihan.deskripsi;
             document.getElementById('admin-gambar').value = produkPilihan.gambar;
             document.getElementById('admin-video').value = produkPilihan.video;
 
-            // Ubah tampilan UI form
             indexEdit = index;
             document.getElementById('judul-form').innerText = "Edit Produk";
             document.getElementById('judul-form').style.color = "#f59e0b";
@@ -216,7 +235,6 @@
             document.getElementById('btn-simpan').innerText = "Update Produk";
             document.getElementById('btn-batal').style.display = "block";
             
-            // Otomatis scroll ke atas (ke arah form)
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -224,7 +242,6 @@
         function batalEdit() {
             indexEdit = -1;
             kosongkanForm();
-            
             document.getElementById('judul-form').innerText = "Area Kerja Admin";
             document.getElementById('judul-form').style.color = "#0f172a";
             document.getElementById('deskripsi-form').innerText = "Gunakan formulir ini untuk menambahkan inventaris produk baru.";
@@ -240,7 +257,7 @@
             document.getElementById('admin-video').value = '';
         }
 
-        // --- 4. TAMPILKAN DAFTAR PRODUK (BARU) ---
+        // --- 4. TAMPILKAN DAFTAR PRODUK ---
         function muatDaftarProduk() {
             let dataProduk = JSON.parse(localStorage.getItem('dataProduk')) || [];
             const container = document.getElementById('list-produk-admin');
@@ -254,7 +271,7 @@
             dataProduk.forEach((produk, index) => {
                 container.innerHTML += `
                     <div class="produk-card">
-                        <img src="${produk.gambar}" alt="${produk.nama}">
+                        <img src="${produk.gambar}" alt="${produk.nama}" onerror="this.src='https://dummyimage.com/300x200/cbd5e1/1e293b.png&text=Gambar+Rusak'">
                         <h4>${produk.nama}</h4>
                         <div class="harga">Rp ${produk.harga.toLocaleString('id-ID')}</div>
                         <button class="btn-edit" onclick="editProduk(${index})">✏️ Edit Produk</button>
@@ -263,7 +280,7 @@
             });
         }
 
-        // --- 5. LOGIKA MANAJEMEN PESANAN (KODE LAMA TETAP AMAN) ---
+        // --- 5. LOGIKA MANAJEMEN PESANAN ---
         function muatPesananUser() {
             let pesanan = JSON.parse(localStorage.getItem('dataPesanan')) || [];
             const container = document.getElementById('list-pesanan-admin');
@@ -306,14 +323,15 @@
                 pesanan[index].status = "Pesanan sudah di konfirmasi admin";
                 localStorage.setItem('dataPesanan', JSON.stringify(pesanan));
                 alert(`Berhasil! Pesanan ${idPesanan} telah dikonfirmasi.`);
-                muatPesananUser(); // Segarkan tampilan admin
+                muatPesananUser(); 
             }
         }
 
-        // Panggil otomatis saat admin.html dibuka
+        // Panggil otomatis saat web admin dibuka!
         window.addEventListener('load', function() {
+            inisialisasiProdukAwal(); // Load 6 produk di awal
             muatPesananUser();
-            muatDaftarProduk(); // Memanggil daftar produk agar muncul
+            muatDaftarProduk(); 
         });
     </script>
 </body>
