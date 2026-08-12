@@ -1,57 +1,58 @@
 
-<!-- Contoh Struktur Form di admin.html -->
-<div class="area-kerja-admin">
-    <label>Nama Produk:</label>
-    <input type="text" id="admin-nama" placeholder="Contoh: Laptop UltraBook Pro">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - GadgetStore</title>
+</head>
+<body>
 
-    <label>Harga Produk (Angka Saja):</label>
-    <input type="number" id="admin-harga" placeholder="Contoh: 15000000">
+    <!-- Bagian Header -->
+    <header>
+        <h1 align="center">GadgetStore System</h1>
+    </header>
 
-    <label>Deskripsi Produk:</label>
-    <textarea id="admin-deskripsi" placeholder="Masukkan deskripsi spesifikasi..."></textarea>
+    <hr>
 
-    <label>URL Gambar Produk:</label>
-    <input type="text" id="admin-gambar" placeholder="Contoh: foto.jpg">
-
-    <label>URL Video Produk:</label>
-    <input type="text" id="admin-video" placeholder="Contoh: https://www.youtube.com/embed/xxxx">
-
-    <button onclick="simpanProduk()">Simpan Produk ke Database</button>
-</div>
-
-<script>
-    function simpanProduk() {
-        // 1. Ambil data dari form
-        const nama = document.getElementById('admin-nama').value;
-        const harga = parseInt(document.getElementById('admin-harga').value);
-        const deskripsi = document.getElementById('admin-deskripsi').value;
-        const gambar = document.getElementById('admin-gambar').value;
-        const video = document.getElementById('admin-video').value;
-
-        if(!nama || !harga || !deskripsi || !gambar || !video) {
-            alert("Mohon lengkapi semua data!");
-            return;
-        }
-
-        // 2. Buat objek produk
-        const produkBaru = { nama, harga, deskripsi, gambar, video };
-
-        // 3. Ambil data lama dari localStorage (jika ada), jika tidak buat array kosong
-        let daftarProduk = JSON.parse(localStorage.getItem('database_produk')) || [];
-
-        // 4. Masukkan produk baru ke dalam array
-        daftarProduk.push(produkBaru);
-
-        // 5. Simpan kembali ke localStorage
-        localStorage.setItem('database_produk', JSON.stringify(daftarProduk));
-
-        alert("Produk " + nama + " berhasil ditambahkan!");
+    <!-- Bagian Konten Utama -->
+    <main>
+        <a href="index.html">← Kembali ke Menu Utama</a>
         
-        // Bersihkan form
-        document.getElementById('admin-nama').value = '';
-        document.getElementById('admin-harga').value = '';
-        document.getElementById('admin-deskripsi').value = '';
-        document.getElementById('admin-gambar').value = '';
-        document.getElementById('admin-video').value = '';
-    }
-</script>
+        <section>
+            <h2>Area Kerja Admin</h2>
+            <p>Gunakan formulir ini untuk menambahkan inventaris produk baru.</p>
+            
+            <!-- Form Input Produk -->
+            <form action="" method="POST">
+                
+                <p>
+                    <label for="nama_produk"><b>Nama Produk:</b></label><br>
+                    <input type="text" id="nama_produk" name="nama_produk" placeholder="Contoh: Laptop UltraBook Pro" size="50" required>
+                </p>
+
+                <p>
+                    <label for="deskripsi_harga"><b>Deskripsi & Harga Produk:</b></label><br>
+                    <textarea id="deskripsi_harga" name="deskripsi_harga" placeholder="Masukkan deskripsi spesifikasi dan harga..." rows="5" cols="52" required></textarea>
+                </p>
+
+                <p>
+                    <label for="url_gambar"><b>URL Gambar Produk:</b></label><br>
+                    <input type="url" id="url_gambar" name="url_gambar" placeholder="https://contoh-link-gambar.com/foto.jpg" size="50" required>
+                </p>
+
+                <p>
+                    <label for="url_video"><b>URL Video Produk:</b></label><br>
+                    <input type="url" id="url_video" name="url_video" placeholder="Contoh: https://www.youtube.com/embed/xxxx" size="50" required>
+                </p>
+
+                <p>
+                    <button type="submit"><b>Simpan Produk ke Database</b></button>
+                </p>
+
+            </form>
+        </section>
+    </main>
+
+</body>
+</html>
