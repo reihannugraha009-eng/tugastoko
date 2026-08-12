@@ -1,171 +1,550 @@
-<script>
-        let keranjang = [];
-        let riwayatPesanan = []; 
-
-        // ====== FUNGSI UNTUK MEMUNCULKAN PRODUK ======
-        function muatKatalogProduk() {
-            let dbProduk = JSON.parse(localStorage.getItem('dataProdukGadgetStore'));
-            const katalogGrid = document.getElementById('katalog-grid');
-            
-            // Jika data belum ada, atau kebetulan isinya cuma 3 (karena kodingan sebelumnya), kita kembalikan ke 6 produk asli!
-            if (!dbProduk || dbProduk.length <= 3) {
-                dbProduk = [
-                    {
-                        nama: "Xiaomi 17T",
-                        harga: 8500000,
-                        deskripsi: "Performa gahar dengan kamera Leica. Cocok untuk fotografi profesional dan gaming berat dengan harga terjangkau.",
-                        gambar: "Screenshot 2026-08-11 123218.png",
-                        video: "https://www.youtube.com/embed/IPl-yBvP79U"
-                    },
-                    {
-                        nama: "Samsung Galaxy S26 Ultra",
-                        harga: 22000000,
-                        deskripsi: "HP Flagship terbaik dengan S-Pen dan teknologi AI canggih. Layar Dynamic AMOLED dan kamera superior.",
-                        gambar: "Screenshot 2026-08-11 123433.png",
-                        video: "https://www.youtube.com/embed/q7Ura_0SwA0"
-                    },
-                    {
-                        nama: "Apple iPhone 17",
-                        harga: 16500000,
-                        deskripsi: "Generasi terbaru iPhone dengan performa chipset ngebut, desain elegan, dan integrasi ekosistem Apple yang mulus.",
-                        gambar: "Screenshot 2026-08-11 123311.png",
-                        video: "https://www.youtube.com/embed/rkLpVyRGCPw"
-                    },
-                    {
-                        nama: "Vivo X300 Pro",
-                        harga: 14000000,
-                        deskripsi: "Perdana dengan Dimensity 9500. Sangat cocok untuk kamu yang mencari hasil jepretan kamera setara DSLR.",
-                        gambar: "Screenshot 2026-08-11 123240.png",
-                        video: "https://www.youtube.com/embed/-I2STJrgxcA"
-                    },
-                    {
-                        nama: "POCO X8 Pro Max",
-                        harga: 6000000,
-                        deskripsi: "Raja performa kelas menengah. Dilengkapi baterai 8500mAh dan HyperCharge 100W, bikin mabar makin lancar.",
-                        gambar: "Screenshot 2026-08-11 120704.png",
-                        video: "https://www.youtube.com/embed/oM9v6P41tRA"
-                    },
-                    {
-                        nama: "ROG Zephyrus DUO",
-                        harga: 130000000,
-                        deskripsi: "IN THIS ECONOMY!!??",
-                        gambar: "Screenshot 2026-08-11 141250.png",
-                        video: "https://www.youtube.com/embed/DSZE5C_I9xE"
-                    }
-                ];
-                // Simpan ulang ke penyimpanan browser
-                localStorage.setItem('dataProdukGadgetStore', JSON.stringify(dbProduk));
-            }
-
-            // Bersihkan area grid
-            katalogGrid.innerHTML = '';
-
-            // Render semua produk ke dalam HTML
-            dbProduk.forEach(produk => {
-                const htmlProduk = `
-                    <div class="kartu-produk">
-                        <img src="${produk.gambar}" alt="${produk.nama}">
-                        <h3>${produk.nama}</h3>
-                        <div class="harga">${formatRupiah(produk.harga)}</div>
-                        <div class="deskripsi">${produk.deskripsi}</div>
-                        <iframe src="${produk.video}" allowfullscreen></iframe>
-                        <button class="btn-beli" onclick="addToCart('${produk.nama}', ${produk.harga})">🛒 Beli Sekarang</button>
-                    </div>
-                `;
-                katalogGrid.innerHTML += htmlProduk;
-            });
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Katalog Pembeli - GadgetStore</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        /* Area atas untuk navigasi, riwayat, & keranjang */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        // Jalankan saat halaman dibuka
-        window.onload = muatKatalogProduk;
+        .back-btn {
+            display: inline-block;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-btn:hover { text-decoration: underline; }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
 
-        // ====== FUNGSI KERANJANG & CHECKOUT ======
-        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('active'); }
-        function formatRupiah(angka) { return "Rp " + angka.toLocaleString('id-ID'); }
-        function buatIDInvoice() { return "INV-" + Math.floor(Math.random() * 900000 + 100000); }
+        /* Tombol Keranjang & Riwayat */
+        .action-btn {
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            position: relative;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            background: #f1f5f9;
+        }
+        
+        #cart-count {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+
+        .kartu-pembatas {
+            background: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 30px;
+        }
+        .kartu-pembatas h2 {
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+        
+        /* Katalog Grid Responsif */
+        .katalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        /* Desain Kartu Produk */
+        .kartu-produk {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fff;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .kartu-produk:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transform: translateY(-8px);
+            border-color: #cbd5e1;
+        }
+        .kartu-produk img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .kartu-produk h3 { margin: 0 0 10px 0; color: #1e293b; font-size: 20px;}
+        .harga {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ef4444; 
+            margin: 5px 0 15px 0;
+        }
+        .deskripsi { color: #64748b; font-size: 14px; margin-bottom: 20px; flex-grow: 1; line-height: 1.5; }
+        
+        /* Video YouTube iframe */
+        .kartu-produk iframe {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        /* Tombol Beli */
+        .btn-beli {
+            display: block;
+            width: 100%;
+            background-color: #2563eb;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-beli:hover { background-color: #1d4ed8; }
+
+        /* ===============================
+           SIDEBAR KERANJANG (CHECKOUT)
+           =============================== */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px; 
+            width: 320px;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            padding: 20px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .cart-sidebar.active { right: 0; }
+        
+        .close-cart {
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .cart-sidebar h3 { border-bottom: 1px solid #ddd; padding-bottom: 10px;}
+        
+        #cart-items { min-height: 50px; margin-bottom: 15px; font-size: 14px;}
+        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 5px;}
+        
+        .btn-hapus-item {
+            background: none; border: none; color: #ef4444; font-size: 12px;
+            cursor: pointer; padding: 0 5px; text-decoration: underline;
+        }
+        
+        .cart-total {
+            text-align: right;
+            font-weight: bold;
+            font-size: 18px;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+        
+        .checkout-form label { display: block; margin-top: 10px; font-size: 14px;}
+        .checkout-form input, .checkout-form textarea, .checkout-form select {
+            width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;
+            border: 1px solid #ccc; border-radius: 4px; font-family: inherit;
+        }
+        .btn-proses {
+            background-color: #22c55e;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+        .btn-proses:hover { background-color: #16a34a; }
+
+        /* ===============================
+           MODAL GLOBAL (SUKSES & RIWAYAT)
+           =============================== */
+        .modal-overlay {
+            display: none; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 12px; 
+            max-width: 500px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 0.4s ease;
+        }
+        .modal-sukses-content { text-align: center; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-sukses-content h2 { color: #22c55e; margin-top: 0; font-size: 24px;}
+        .modal-sukses-content p { color: #475569; line-height: 1.6; margin-bottom: 25px;}
+        
+        .btn-tutup-modal {
+            background: #2563eb; color: white; border: none; padding: 10px 25px;
+            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px;
+        }
+        .btn-tutup-modal:hover { background: #1d4ed8; }
+
+        /* ===============================
+           DESAIN LIST RIWAYAT PESANAN
+           =============================== */
+        .header-riwayat {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 15px;
+        }
+        .header-riwayat h2 { color: #ea580c; font-size: 20px; margin: 0; display: flex; align-items: center; gap: 8px;}
+        .btn-close-riwayat { cursor: pointer; font-size: 20px; font-weight: bold; color: #94a3b8; }
+        .btn-close-riwayat:hover { color: #333; }
+        
+        .riwayat-container {
+            max-height: 350px; overflow-y: auto; padding-right: 10px;
+        }
+        
+        .kartu-riwayat {
+            background: #fafaf9; border: 1px solid #e5e7eb; border-radius: 8px;
+            padding: 15px; margin-bottom: 15px; font-size: 14px;
+        }
+        .riwayat-top {
+            display: flex; justify-content: space-between; border-bottom: 1px dashed #d1d5db;
+            padding-bottom: 10px; margin-bottom: 10px;
+        }
+        .riwayat-id { font-weight: bold; color: #333; }
+        .riwayat-status { background: #fef08a; color: #a16207; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        
+        .riwayat-detail p { margin: 5px 0; color: #475569; }
+        .riwayat-detail strong { color: #1e293b; }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GadgetStore System</h1>
+    </header>
+
+    <div class="container">
+        
+        <div class="top-bar">
+            <a href="index.html" class="back-btn">⬅ Kembali ke Menu Utama</a>
+            
+            <div class="header-actions">
+                <!-- Tombol Pesanan Kamu (Baru) -->
+                <div class="action-btn" onclick="bukaRiwayat()">
+                    📦 Pesanan Kamu
+                </div>
+                <!-- Tombol Keranjang -->
+                <div class="action-btn" onclick="toggleCart()">
+                    🛒 Keranjang <span id="cart-count">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="kartu-pembatas">
+            <h2>Katalog Produk</h2>
+            
+            <div class="katalog-grid">
+                
+                <div class="kartu-produk">
+                    <img src="Screenshot 2026-08-11 123218.png" alt="Xiaomi 17T">
+                    <h3>Xiaomi 17T</h3>
+                    <div class="harga">Rp 8.500.000</div>
+                    <div class="deskripsi">Performa gahar dengan kamera Leica. Cocok untuk fotografi profesional dan gaming berat dengan harga terjangkau.</div>
+                    <iframe src="https://www.youtube.com/embed/IPl-yBvP79U" allowfullscreen></iframe>
+                    <button class="btn-beli" onclick="addToCart('Xiaomi 17T', 8500000)">🛒 Beli Sekarang</button>
+                </div>
+
+                <div class="kartu-produk">
+                    <img src="Screenshot 2026-08-11 123433.png" alt="Samsung Galaxy S26 Ultra">
+                    <h3>Samsung Galaxy S26 Ultra</h3>
+                    <div class="harga">Rp 22.000.000</div>
+                    <div class="deskripsi">HP Flagship terbaik dengan S-Pen dan teknologi AI canggih. Layar Dynamic AMOLED dan kamera superior.</div>
+                    <iframe src="https://www.youtube.com/embed/q7Ura_0SwA0" allowfullscreen></iframe>
+                    <button class="btn-beli" onclick="addToCart('Samsung Galaxy S26 Ultra', 22000000)">🛒 Beli Sekarang</button>
+                </div>
+
+                <div class="kartu-produk">
+                    <img src="Screenshot 2026-08-11 123311.png" alt="iPhone 17">
+                    <h3>Apple iPhone 17</h3>
+                    <div class="harga">Rp 16.500.000</div>
+                    <div class="deskripsi">Generasi terbaru iPhone dengan performa chipset ngebut, desain elegan, dan integrasi ekosistem Apple yang mulus.</div>
+                    <iframe src="https://www.youtube.com/embed/rkLpVyRGCPw" allowfullscreen></iframe>
+                    <button class="btn-beli" onclick="addToCart('Apple iPhone 17', 16500000)">🛒 Beli Sekarang</button>
+                </div>
+
+                <div class="kartu-produk">
+                    <img src="Screenshot 2026-08-11 123240.png" alt="Vivo X300 Pro">
+                    <h3>Vivo X300 Pro</h3>
+                    <div class="harga">Rp 14.000.000</div>
+                    <div class="deskripsi">Perdana dengan Dimensity 9500. Sangat cocok untuk kamu yang mencari hasil jepretan kamera setara DSLR.</div>
+                    <iframe src="https://www.youtube.com/embed/-I2STJrgxcA" allowfullscreen></iframe>
+                    <button class="btn-beli" onclick="addToCart('Vivo X300 Pro', 14000000)">🛒 Beli Sekarang</button>
+                </div>
+
+                <div class="kartu-produk">
+                    <img src="Screenshot 2026-08-11 120704.png" alt="POCO X8 Pro">
+                    <h3>POCO X8 Pro Max</h3>
+                    <div class="harga">Rp 6.000.000</div>
+                    <div class="deskripsi">Raja performa kelas menengah. Dilengkapi baterai 8500mAh dan HyperCharge 100W, bikin mabar makin lancar.</div>
+                    <iframe src="https://www.youtube.com/embed/oM9v6P41tRA" allowfullscreen></iframe>
+                    <button class="btn-beli" onclick="addToCart('POCO X8 Pro Max', 6000000)">🛒 Beli Sekarang</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR KERANJANG -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <span class="close-cart" onclick="toggleCart()">✕ Tutup</span>
+        <h3>Keranjang Belanja</h3>
+        
+        <div id="cart-items"></div>
+        
+        <div class="cart-total">
+            Total: <span id="total-price">Rp 0</span>
+        </div>
+        
+        <div class="checkout-form">
+            <h3>Data Checkout</h3>
+            <label>Nama Lengkap:</label>
+            <input type="text" id="nama" placeholder="Masukkan nama kamu">
+            <label>No. WhatsApp:</label>
+            <input type="text" id="nowa" placeholder="08xx xxxx xxxx">
+            <label>Alamat:</label>
+            <textarea id="alamat" rows="3" placeholder="Alamat pengiriman lengkap..."></textarea>
+            <label>Metode Pembayaran:</label>
+            <select id="metode">
+                <option value="">-- Pilih Metode --</option>
+                <option value="Transfer Bank">Transfer Bank</option>
+                <option value="COD">Bayar di Tempat (COD)</option>
+                <option value="E-Wallet">E-Wallet (OVO/Dana/Gopay)</option>
+            </select>
+            <button class="btn-proses" onclick="prosesPesanan()">🚀 Proses Pesanan</button>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP PESANAN SUKSES -->
+    <div id="modal-sukses" class="modal-overlay">
+        <div class="modal-content modal-sukses-content">
+            <h2>🎉 Hore, Pesanan Berhasil! 🎉</h2>
+            <p id="pesan-sukses-detail"></p>
+            <button class="btn-tutup-modal" onclick="tutupModalSukses()">Tutup & Kembali Belanja</button>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP RIWAYAT PESANAN (BARU) -->
+    <div id="modal-riwayat" class="modal-overlay">
+        <div class="modal-content">
+            <div class="header-riwayat">
+                <h2>📦 Riwayat & Status Pesanan Saya</h2>
+                <span class="btn-close-riwayat" onclick="tutupRiwayat()">✕</span>
+            </div>
+            
+            <div id="container-list-riwayat" class="riwayat-container">
+                <!-- Data Riwayat akan di-render di sini oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <audio src="sound.mp3" autoplay loop hidden></audio>
+
+    <script>
+        let keranjang = [];
+        let riwayatPesanan = []; // Database lokal untuk menyimpan pesanan berhasil
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('active');
+        }
+
+        function formatRupiah(angka) {
+            return "Rp " + angka.toLocaleString('id-ID');
+        }
+
+        // Generate ID Invoice Acak (Misal: INV-500374)
+        function buatIDInvoice() {
+            return "INV-" + Math.floor(Math.random() * 900000 + 100000);
+        }
 
         function addToCart(namaProduk, hargaProduk) {
             keranjang.push({ nama: namaProduk, harga: hargaProduk });
             updateKeranjang();
+            
             const cartIcon = document.getElementById('cart-count');
             cartIcon.style.transform = "scale(1.5)";
             setTimeout(() => cartIcon.style.transform = "scale(1)", 200);
         }
 
-        function hapusItem(index) { keranjang.splice(index, 1); updateKeranjang(); }
+        function hapusItem(index) {
+            keranjang.splice(index, 1); 
+            updateKeranjang();
+        }
 
         function updateKeranjang() {
             document.getElementById('cart-count').innerText = keranjang.length;
             const cartItemsDiv = document.getElementById('cart-items');
             cartItemsDiv.innerHTML = ''; 
-            let total = 0;
             
+            let total = 0;
             if (keranjang.length === 0) {
                 cartItemsDiv.innerHTML = '<p style="color:#94a3b8; text-align:center;">Keranjang kosong.</p>';
             } else {
                 keranjang.forEach((item, index) => {
                     total += item.harga;
-                    cartItemsDiv.innerHTML += `
-                        <div class="cart-item">
-                            <div>
-                                <strong>${item.nama}</strong><br>
-                                <button class="btn-hapus-item" onclick="hapusItem(${index})">🗑️ Hapus</button>
-                            </div>
-                            <span>${formatRupiah(item.harga)}</span>
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'cart-item';
+                    itemDiv.innerHTML = `
+                        <div>
+                            <strong>${item.nama}</strong><br>
+                            <button class="btn-hapus-item" onclick="hapusItem(${index})">🗑️ Hapus</button>
                         </div>
+                        <span>${formatRupiah(item.harga)}</span>
                     `;
+                    cartItemsDiv.appendChild(itemDiv);
                 });
             }
             document.getElementById('total-price').innerText = formatRupiah(total);
         }
 
         function prosesPesanan() {
-            if (keranjang.length === 0) { alert("Keranjang masih kosong."); return; }
+            if (keranjang.length === 0) {
+                alert("Keranjang masih kosong, silakan pilih produk dulu.");
+                return;
+            }
+            
             const nama = document.getElementById('nama').value;
             const nowa = document.getElementById('nowa').value;
             const alamat = document.getElementById('alamat').value;
             const metode = document.getElementById('metode').value;
             
-            if(!nama || !nowa || !alamat || !metode) { alert("Lengkapi data checkout!"); return; }
+            if(!nama || !nowa || !alamat || !metode) {
+                alert("Mohon lengkapi semua Data Checkout terlebih dahulu!");
+                return;
+            }
             
             const totalHarga = document.getElementById('total-price').innerText;
+            
+            // 1. Simpan data ke Riwayat Pesanan
             const listProdukDibeli = keranjang.map(item => item.nama).join(', ');
             
-            riwayatPesanan.unshift({
-                id: buatIDInvoice(), namaPembeli: nama, noWa: nowa, alamatTujuan: alamat, produk: listProdukDibeli, total: totalHarga, status: "Menunggu Konfirmasi"
-            });
+            const pesananBaru = {
+                id: buatIDInvoice(),
+                namaPembeli: nama,
+                noWa: nowa,
+                alamatTujuan: alamat,
+                produk: listProdukDibeli,
+                total: totalHarga,
+                status: "Menunggu Konfirmasi"
+            };
             
-            document.getElementById('pesan-sukses-detail').innerHTML = `Terima kasih <b>${nama}</b>! <br> Pesanan senilai <b>${totalHarga}</b> menggunakan metode <b>${metode}</b> sedang diproses.`;
+            riwayatPesanan.unshift(pesananBaru); // Masukkan di urutan paling atas
+
+            // 2. Tampilkan Modal Sukses
+            const pesanDetail = `Terima kasih <b>${nama}</b>! <br> Pesanan gadget kamu senilai <b>${totalHarga}</b> menggunakan metode <b>${metode}</b> sedang kami proses. Cek status di menu <b>Pesanan Kamu</b>.`;
+            document.getElementById('pesan-sukses-detail').innerHTML = pesanDetail;
             document.getElementById('modal-sukses').style.display = 'flex';
             
+            // 3. Bersihkan Form & Keranjang
             keranjang = [];
-            document.getElementById('nama').value = ''; document.getElementById('nowa').value = '';
-            document.getElementById('alamat').value = ''; document.getElementById('metode').value = '';
-            updateKeranjang(); document.getElementById('cart-sidebar').classList.remove('active'); 
+            document.getElementById('nama').value = '';
+            document.getElementById('nowa').value = '';
+            document.getElementById('alamat').value = '';
+            document.getElementById('metode').value = '';
+            updateKeranjang();
+            document.getElementById('cart-sidebar').classList.remove('active');
         }
 
-        function tutupModalSukses() { document.getElementById('modal-sukses').style.display = 'none'; }
-        function tutupRiwayat() { document.getElementById('modal-riwayat').style.display = 'none'; }
+        function tutupModalSukses() {
+            document.getElementById('modal-sukses').style.display = 'none';
+        }
 
+        // FITUR BARU: Buka Modal Riwayat Pesanan
         function bukaRiwayat() {
             const containerRiwayat = document.getElementById('container-list-riwayat');
-            containerRiwayat.innerHTML = ''; 
+            containerRiwayat.innerHTML = ''; // Kosongkan dulu sebelum diisi ulang
+
             if(riwayatPesanan.length === 0) {
                 containerRiwayat.innerHTML = '<p style="text-align:center; color:#94a3b8; padding: 20px 0;">Belum ada riwayat pesanan.</p>';
             } else {
                 riwayatPesanan.forEach(order => {
-                    containerRiwayat.innerHTML += `
+                    const htmlCard = `
                         <div class="kartu-riwayat">
-                            <div class="riwayat-top"><span class="riwayat-id">ID: ${order.id}</span><span class="riwayat-status">${order.status}</span></div>
+                            <div class="riwayat-top">
+                                <span class="riwayat-id">ID: ${order.id}</span>
+                                <span class="riwayat-status">${order.status}</span>
+                            </div>
                             <div class="riwayat-detail">
                                 <p><strong>Penerima:</strong> ${order.namaPembeli} (${order.noWa})</p>
                                 <p><strong>Alamat:</strong> ${order.alamatTujuan}</p>
                                 <p><strong>Produk:</strong> ${order.produk}</p>
                                 <p><strong>Total:</strong> <span style="color:#ef4444; font-weight:bold;">${order.total}</span></p>
                             </div>
-                        </div>`;
+                        </div>
+                    `;
+                    containerRiwayat.innerHTML += htmlCard;
                 });
             }
+
             document.getElementById('modal-riwayat').style.display = 'flex';
         }
+
+        // FITUR BARU: Tutup Modal Riwayat
+        function tutupRiwayat() {
+            document.getElementById('modal-riwayat').style.display = 'none';
+        }
     </script>
+</body>
+</html>
